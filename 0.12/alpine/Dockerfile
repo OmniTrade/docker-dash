@@ -100,17 +100,32 @@ RUN apk --no-cache add \
   libevent \
   libressl \
   libzmq \
-  su-exec
+  su-exec \
+  build-base python python-dev py-pip procps htop
 
-ENV DASH_DATA=/home/dash/.dashcore
+RUN pip install --upgrade google-cloud-logging
+RUN pip install --upgrade grpcio==1.7.3
+
+ENV DASH_DATA=/data
 ENV DASH_VERSION=0.12.2.2
 ENV DASH_PREFIX=/opt/dash-${DASH_VERSION}
 ENV PATH=${DASH_PREFIX}/bin:$PATH
 
+RUN mkdir "$DASH_DATA" \
+	&& chown -R dash: "$DASH_DATA" \
+  && rm -Rf /home/dash/.dashcore \
+	&& ln -sfn "$DASH_DATA" /home/dash/.dashcore \
+	&& chown -h dash: /home/dash/.dashcore
+
 COPY --from=dash /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
+COPY rabbitmqadmin /usr/bin/rabbitmqadmin
+COPY google-logger /usr/bin/google-logger
 
-VOLUME ["/home/dash/.dashcore"]
+RUN chmod +x /usr/bin/rabbitmqadmin
+RUN chmod +x /usr/bin/google-logger
+
+VOLUME ["/data"]
 
 EXPOSE 9998 9999 18332 19998 19999
 
