@@ -2,7 +2,14 @@ FROM debian:stable-slim
 
 LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.1="Pedro Branco (@pedrobranco)" \
-  maintainer.2="Rui Marinho (@ruimarinho)"
+  maintainer.2="Rui Marinho (@ruimarinho)" \
+  editor.0="Bruno Amaral F (@bamaralf)"
+
+ENV GOSU_VERSION=1.10
+ENV DASH_VERSION=0.12.3.2
+ENV DASH_FOLDER_VERSION=0.12.3
+ENV DASH_DATA=/home/dash/.dashcore \
+  PATH=/opt/dashcore-${DASH_FOLDER_VERSION}/bin:$PATH
 
 RUN useradd -r dash \
   && apt-get update -y \
@@ -18,21 +25,13 @@ RUN useradd -r dash \
     gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
     gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
     gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done
-
-ENV GOSU_VERSION=1.10
-
-RUN curl -o /usr/local/bin/gosu -fSL https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture) \
+  done \
+  && curl -o /usr/local/bin/gosu -fSL https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture) \
   && curl -o /usr/local/bin/gosu.asc -fSL https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture).asc \
   && gpg --verify /usr/local/bin/gosu.asc \
   && rm /usr/local/bin/gosu.asc \
-  && chmod +x /usr/local/bin/gosu
-
-ENV DASH_VERSION=0.12.2.2
-ENV DASH_FOLDER_VERSION=0.12.2
-ENV DASH_DATA=/home/dash/.dashcore \
-  PATH=/opt/dashcore-${DASH_FOLDER_VERSION}/bin:$PATH
-RUN curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/SHA256SUMS.asc \
+  && chmod +x /usr/local/bin/gosu \
+  && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/SHA256SUMS.asc \
   && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/dashcore-${DASH_VERSION}-linux64.tar.gz \
   && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/dashcore-${DASH_VERSION}-linux64.tar.gz.asc \
   && gpg --verify dashcore-${DASH_VERSION}-linux64.tar.gz.asc \
