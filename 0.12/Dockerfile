@@ -47,4 +47,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 9998 9999 18332 19998 19999
 
-CMD ["dashd -conf=$DASH_DATA/dash.conf"]
+CMD ["dashd"]

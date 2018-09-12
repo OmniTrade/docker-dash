@@ -25,7 +25,7 @@ if [ $(echo "$1" | cut -c1) = "-" ] || [ "$1" = "dashd" ]; then
 
   echo "$0: setting data directory to $DASH_DATA"
 
-  set -- "$@" -datadir="$DASH_DATA"
+  set -- "$@" -datadir="$DASH_DATA -conf=$DASH_DATA/dash.conf"
 fi
 
 if [ "$1" = "dashd" ] || [ "$1" = "dash-cli" ] || [ "$1" = "dash-tx" ]; then
