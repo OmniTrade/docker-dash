@@ -31,12 +31,10 @@ RUN useradd -r dash \
 	&& echo "$DASH_SHA256 dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz" | sha256sum -c - \
   && tar -xzf dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz -C /opt \
   && rm *.tar.gz \
-# create folders and links
+# create folders and set permissions to workdir
   && mkdir "$DASH_DATA" \
 	&& chown -R dash: "$DASH_DATA" \
-  && rm -Rf /home/dash/.dashcore \
-	&& ln -sfn "$DASH_DATA" /home/dash/.dashcore \
-	&& chown -h dash: /home/dash/.dashcore \
+  && rm -rf /home/dash/.dashcore \
 # set files permissions
   && chmod +x /usr/bin/rabbitmqadmin \
   && chmod +x /usr/bin/google-logger  
@@ -49,4 +47,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 9998 9999 18332 19998 19999
 
-CMD ["dashd"]
+CMD ["dashd -conf=$DASH_DATA/dash.conf"]
