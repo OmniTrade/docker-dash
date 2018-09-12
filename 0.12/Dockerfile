@@ -12,7 +12,6 @@ ENV DASH_DATA=/data
 ENV DASH_PREFIX=/opt/dash-${DASH_VERSION}
 ENV PATH=${DASH_PREFIX}/bin:$PATH
 
-COPY --from=dash /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY rabbitmqadmin /usr/bin/rabbitmqadmin
 COPY google-logger /usr/bin/google-logger  
