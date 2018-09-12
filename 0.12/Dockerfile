@@ -6,7 +6,9 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   editor.0="Bruno Amaral F (@bamaralf)"
 
 ENV GOSU_VERSION=1.10
+ENV GOSU_SHA256=5b3b03713a888cee84ecbf4582b21ac9fd46c3d935ff2d7ea25dd5055d302d3c
 ENV DASH_VERSION=0.12.3.2
+ENV DASH_SHA256=1c80bc79451da100c38c431fc8f9ff8e35e6f30a65df7b4200f8b01344453c70
 ENV DASH_FOLDER_VERSION=0.12.3
 ENV DASH_DATA=/home/dash/.dashcore \
   PATH=/opt/dashcore-${DASH_FOLDER_VERSION}/bin:$PATH
@@ -17,25 +19,13 @@ RUN useradd -r dash \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && set -ex \
-  && for key in \
-    B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-    4B88269ABD8DF332 \
-  ; do \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done \
   && curl -o /usr/local/bin/gosu -fSL https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture) \
-  && curl -o /usr/local/bin/gosu.asc -fSL https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture).asc \
-  && gpg --verify /usr/local/bin/gosu.asc \
-  && rm /usr/local/bin/gosu.asc \
+  && echo "$GOSU_SHA256 /usr/local/bin/gosu" | sha256sum -c - \
   && chmod +x /usr/local/bin/gosu \
-  && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/SHA256SUMS.asc \
-  && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/dashcore-${DASH_VERSION}-linux64.tar.gz \
-  && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/dashcore-${DASH_VERSION}-linux64.tar.gz.asc \
-  && gpg --verify dashcore-${DASH_VERSION}-linux64.tar.gz.asc \
-  && tar -xzf dashcore-${DASH_VERSION}-linux64.tar.gz -C /opt \
+  && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz \
+  && ls -lah \
+	&& echo "$DASH_SHA256 dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz" | sha256sum -c - \
+  && tar -xzf dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz -C /opt \
   && rm *.tar.gz
 
 VOLUME ["/home/dash/.dashcore"]
