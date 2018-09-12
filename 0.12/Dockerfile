@@ -8,8 +8,9 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
 ENV DASH_VERSION=0.12.3.2
 ENV DASH_SHA256=1c80bc79451da100c38c431fc8f9ff8e35e6f30a65df7b4200f8b01344453c70
 ENV DASH_FOLDER_VERSION=0.12.3
-ENV DASH_DATA=/home/dash/.dashcore \
-  PATH=/opt/dashcore-${DASH_FOLDER_VERSION}/bin:$PATH
+ENV DASH_DATA=/data 
+ENV DASH_PREFIX=/opt/dash-${DASH_VERSION}
+ENV PATH=${DASH_PREFIX}/bin:$PATH
 
 #COPY --from=dash /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
@@ -32,16 +33,16 @@ RUN useradd -r dash \
   && tar -xzf dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz -C /opt \
   && rm *.tar.gz \
 # create folders and links
-  # && mkdir "$DASH_DATA" \
-	# && chown -R dash: "$DASH_DATA" \
-  # && rm -Rf /home/dash/.dashcore \
-	# && ln -sfn "$DASH_DATA" /home/dash/.dashcore \
-	# && chown -h dash: /home/dash/.dashcore \
+  && mkdir "$DASH_DATA" \
+	&& chown -R dash: "$DASH_DATA" \
+  && rm -Rf /home/dash/.dashcore \
+	&& ln -sfn "$DASH_DATA" /home/dash/.dashcore \
+	&& chown -h dash: /home/dash/.dashcore \
 # set files permissions
   && chmod +x /usr/bin/rabbitmqadmin \
   && chmod +x /usr/bin/google-logger  
 
-VOLUME ["/home/dash/.dashcore"]
+VOLUME ["/data"]
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
