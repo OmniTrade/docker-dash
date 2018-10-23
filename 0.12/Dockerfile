@@ -5,7 +5,7 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.2="Rui Marinho (@ruimarinho)" \
   editor.0="Bruno Amaral F (@bamaralf)"
 
-ENV DASH_VERSION=0.12.3.2
+ENV DASH_VERSION=0.12.3.3
 ENV DASH_SHA256=1c80bc79451da100c38c431fc8f9ff8e35e6f30a65df7b4200f8b01344453c70
 ENV DASH_FOLDER_VERSION=0.12.3
 ENV DASH_DATA=/data 
