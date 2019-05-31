@@ -5,16 +5,16 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.2="Rui Marinho (@ruimarinho)" \
   editor.0="Bruno Amaral F (@bamaralf)"
 
-ENV DASH_VERSION=0.13.1.0
-ENV DASH_SHA256=5ce96dbb8376e99f1e783f4ff77018d562778aac5a1249fbe4f4532c03df6432
-ENV DASH_FOLDER_VERSION=0.13.1
-ENV DASH_DATA=/data 
+ENV DASH_VERSION=0.14.0.1
+ENV DASH_SHA256=c28881104ef7b3bdede7eb2b231b076a6e69213948695b4ec79ccb5621c04d97
+ENV DASH_FOLDER_VERSION=0.14.0
+ENV DASH_DATA=/data
 ENV DASH_PREFIX=/opt/dashcore-${DASH_FOLDER_VERSION}
 ENV PATH=${DASH_PREFIX}/bin:$PATH
 
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY rabbitmqadmin /usr/bin/rabbitmqadmin
-COPY google-logger /usr/bin/google-logger  
+COPY google-logger /usr/bin/google-logger
 
 RUN useradd -r dash \
   && set -ex \
@@ -25,19 +25,19 @@ RUN useradd -r dash \
   && pip install --upgrade grpcio==1.7.3 \
 # apt clean
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \  
-# install binaries  
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+# install binaries
   && curl -SLO https://github.com/dashpay/dash/releases/download/v${DASH_VERSION}/dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz \
-	&& echo "$DASH_SHA256 dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz" | sha256sum -c - \
+  && echo "$DASH_SHA256 dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz" | sha256sum -c - \
   && tar -xzf dashcore-${DASH_VERSION}-x86_64-linux-gnu.tar.gz -C /opt \
   && rm *.tar.gz \
 # create folders and set permissions to workdir
   && mkdir "$DASH_DATA" \
-	&& chown -R dash: "$DASH_DATA" \
+  && chown -R dash: "$DASH_DATA" \
   && rm -rf /home/dash/.dashcore \
 # set files permissions
   && chmod +x /usr/bin/rabbitmqadmin \
-  && chmod +x /usr/bin/google-logger  
+  && chmod +x /usr/bin/google-logger
 
 VOLUME ["/data"]
 
